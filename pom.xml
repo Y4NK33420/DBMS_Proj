@@ -1,0 +1,397 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>edu.upenn.cis.db</groupId>
+	<artifactId>graph-trans</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>graph-trans</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.6.0</version>
+		</dependency>
+
+
+
+
+		<!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
+		<dependency>
+			<groupId>com.google.protobuf</groupId>
+			<artifactId>protobuf-java</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.antlr/antlr4 -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4</artifactId>
+			<version>4.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.antlr/antlr4-runtime -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4-runtime</artifactId>
+			<version>4.8</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.antlr/antlr4-maven-plugin -->
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4-maven-plugin</artifactId>
+			<version>4.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>2.8.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.8</version>
+		</dependency>
+
+		<!-- Below two are required to use log4j2.yaml -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+			<version>2.8.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.neo4j.driver/neo4j-java-driver -->
+		<dependency>
+			<groupId>org.neo4j.driver</groupId>
+			<artifactId>neo4j-java-driver</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j -->
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j</artifactId>
+			<version>4.4.0</version>			<!-- 4.1.4 -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-bolt</artifactId>
+			<version>4.4.0</version>			<!-- 4.1.4 -->
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.neo4j.procedure/apoc -->
+		<dependency>
+			<groupId>org.neo4j.procedure</groupId>
+			<artifactId>apoc</artifactId>
+			<version>4.4.0.1</version>
+			<classifier>all</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-import-tool</artifactId>
+			<version>4.4.0</version> <!-- 4.1.4 -->
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.3</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-server -->
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>9.4.34.v20201102</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.neo4j/neo4j-procedure-api -->
+		<!-- <dependency> <groupId>org.neo4j</groupId> <artifactId>neo4j-procedure-api</artifactId> 
+			<version>3.5.23</version> </dependency> -->
+
+
+		<!-- https://mvnrepository.com/artifact/org.sat4j/org.sat4j.core -->
+		<!-- <dependency> <groupId>org.sat4j</groupId> <artifactId>org.sat4j.core</artifactId> 
+			<version>2.3.1</version> </dependency> -->
+		<!-- https://search.maven.org/artifact/org.neo4j/neo4j/3.5.3/jar -->
+		<!-- <dependency> <groupId>org.neo4j</groupId> <artifactId>neo4j</artifactId> 
+			<version>3.5.3</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/org.neo4j.app/neo4j-server -->
+		<!-- <dependency> <groupId>org.neo4j.app</groupId> <artifactId>neo4j-server</artifactId> 
+			<version>3.5.3</version> </dependency> -->
+		<!-- <dependency> <groupId>org.neo4j</groupId> <artifactId>neo4j-bolt</artifactId> 
+			<version>3.5.3</version> </dependency> -->
+		<!-- https://mvnrepository.com/artifact/com.sparkjava/spark-core -->
+		<dependency>
+			<groupId>com.sparkjava</groupId>
+			<artifactId>spark-core</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.opencsv/opencsv -->
+		<!-- <dependency> <groupId>com.opencsv</groupId> <artifactId>opencsv</artifactId> 
+			<version>3.3</version> </dependency> -->
+		<!-- installed in the local maven repository -->
+		<!-- https://mvnrepository.com/artifact/com.microsoft.z3/libz3.linux -->
+		<dependency>
+			<groupId>com.microsoft</groupId>
+			<artifactId>z3</artifactId>
+			<version>4.8.7</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>3.0.0-M5</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.ini4j/ini4j -->
+		<dependency>
+			<groupId>org.ini4j</groupId>
+			<artifactId>ini4j</artifactId>
+			<version>0.5.4</version>
+		</dependency>
+
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- For setting up JDK/JRE version -->
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> 
+				<version>3.8.0</version> <configuration> <release>11</release> </configuration> 
+				</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
+				<configuration>
+					<source>11</source>
+					<target>11</target>
+					<useIncrementalCompilation>true</useIncrementalCompilation>
+				</configuration>
+			</plugin>
+			<!-- https://stackoverflow.com/questions/16963012/maven-compiler-recompile-all-files-instead-modified -->
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>4.8</version>
+				<configuration>
+					<arguments>
+						<argument>-encoding</argument>
+						<argument>UTF-8</argument>
+						<argument>-no-listener</argument>
+						<argument>-visitor</argument>
+					</arguments>
+				</configuration>
+				<executions>
+					<execution>
+						<id>antlr</id>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19</version>
+				<configuration>
+					<argLine>-Xmx8192m</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<!-- <execution> <id>add-source</id> <phase>generate-sources</phase> 
+						<goals> <goal>add-source</goal> </goals> <configuration> <sources> <source>src/main/java/edu/upenn/cis/db/graphtrans</source> 
+						</sources> </configuration> </execution> -->
+					<execution>
+						<id>add-antlr4-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/main/antlr4</source>
+							</sources>
+						</configuration>
+					</execution>
+					<!-- <execution> <id>add-resource</id> <phase>generate-resources</phase> 
+						<goals> <goal>add-resource</goal> </goals> <configuration> <resources> <resource> 
+						<directory>src/main/resources</directory> </resource> </resources> </configuration> 
+						</execution> <execution> <id>add-test-resource</id> <phase>generate-test-resources</phase> 
+						<goals> <goal>add-test-resource</goal> </goals> <configuration> <resources> 
+						<resource> <directory>src/test/resources</directory> </resource> </resources> 
+						</configuration> </execution> <execution> <id>add-test-source</id> <phase>generate-test-sources</phase> 
+						<goals> <goal>add-test-source</goal> </goals> <configuration> <sources> <source>src/test/java/edu/upenn/cis/db/graphtrans</source> 
+						</sources> </configuration> </execution> -->
+					<execution>
+						<phase>generate-antlr4-sources</phase>
+						<id>add-antlr4-generated-source</id>
+						<goals>
+							<goal>add-antlr4-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>target/generated-sources/antlr4</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<forkMode>once</forkMode>
+					<environmentVariables>
+						<java.library.path>/home/ubuntu/tools/z3-4.8.7-x64-ubuntu-16.04/bin:${java.library.path}</java.library.path>
+					</environmentVariables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.6.0</version>
+				<executions>
+					<execution>
+						<id>console</id>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>edu.upenn.cis.db.graphtrans.Client</mainClass>
+							<arguments>
+								<argument>-o</argument> <!-- FIXME -->
+								<argument>abc</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>gen</id>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>edu.upenn.cis.db.graphtrans.experiment.GraphGenerator</mainClass>
+						</configuration>
+					</execution>
+					<execution>
+						<id>neo4j</id>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>edu.upenn.cis.db.Neo4j.Neo4jServerThread</mainClass>
+						</configuration>
+					</execution>
+					<execution>
+						<id>pgtest</id>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>edu.upenn.cis.db.graphtrans.store.postgres.PGtest</mainClass>
+							<argLine>-Xmx8192m</argLine>
+						</configuration>
+					</execution>
+					<execution>
+						<id>exp</id>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>edu.upenn.cis.db.graphtrans.experiment.ExpStarterSecond</mainClass>
+							<argLine>-Xmx12000m</argLine>
+						</configuration>
+					</execution>
+					<execution>
+						<id>graphprep</id>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>edu.upenn.cis.db.graphtrans.experiment.ExpPrepSynGraphs</mainClass>
+						</configuration>
+					</execution>
+					<execution>
+						<id>graphprepn4</id>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<mainClass>edu.upenn.cis.db.graphtrans.experiment.ExpPrepForNeo4j</mainClass>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- <mainClass>edu.upenn.cis.db.graphtrans.Client</mainClass> -->
+					<mainClass>edu.upenn.cis.db.graphtrans.experiment.ExpStarterSecond</mainClass>
+					<arguments>
+						<!-- <argument>-i</argument> -->
+						<!-- <argument>src/main/resources/scripts/q.txt</argument> -->
+					</arguments>
+				</configuration>
+
+			</plugin>
+		</plugins>
+	</build>
+</project>
