@@ -1,0 +1,10 @@
+// Import form CSV
+_in(offset; id, label) -> int(offset), int(id), string(label).
+lang:physical:filePath[`_in] = "<FILEPATH>/node.csv".
+lang:physical:fileMode[`_in] = "import".
++N_g(id, label) <- _in(_; id, label).
+// Import form CSV
+_in_e(offset; id, from, to, label) -> int(offset), int(id), int(from), int(to), string(label).
+lang:physical:filePath[`_in_e] = "<FILEPATH>/edge.csv".
+lang:physical:fileMode[`_in_e] = "import".
++E_g(id, from, to, label) <- _in_e(_; id, from, to, label).

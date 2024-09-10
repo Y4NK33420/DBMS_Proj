@@ -113,10 +113,13 @@ Step 1: Download and prepare the dataset (approximately 25 minutes on the test m
 
   > ./setup.sh
  
- Step 2: Run experiments
+ Step 2: Run experiments 
  
-  > ./run.sh
+  > ./run.sh -i 1 -p lb -v mv -d word
 
+
+<!--
  Step 3: Collect data, then create tables and graphs.
 
   > ./report.sh
+-->

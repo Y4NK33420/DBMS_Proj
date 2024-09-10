@@ -1,0 +1,117 @@
+// CAUTION:
+//  This file is not a valid JSON file because it allows multiline strings and comments for convenience.
+//  Lines that start with two slashes (//) are commented out.
+{
+    "schema": {
+        "nodes": [
+            "A", "P", "V"
+        ],
+        "edges": [
+            ["W", "P", "A"], ["P", "P", "V"]
+        ]
+    },
+    "constraints": [
+    ],
+    "workload": [
+        {
+           "name": "v1",
+           "views": [
+               "   CREATE VIEW v1 ON g (
+                       MATCH
+                           (person1:Person)-[e1:KNOWS]->(person2:Person), 
+                           // (person2:Person)-[e2:KNOWS]->(person1:Person),
+                           (comment:Comment)-[e3:HASCREATOR]->(person1:Person), 
+                           (comment:Comment)-[e4:REPLYOF]->(post:Post),
+                           (post:Post)-[e5:HASCREATOR]->(person2:Person)
+                        WHERE person1 <= 1159400
+                       CONSTRUCT
+                           (person1:Person)-[e1:KNOWS]->(person2:Person), 
+                           // (person2:Person)-[e2:KNOWS]->(person1:Person),
+                           (comment:Comment)-[e3:HASCREATOR]->(person1:Person), 
+                           (comment:Comment)-[e4:REPLYOF]->(post:Post),
+                           (post:Post)-[e5:HASCREATOR]->(person2:Person)
+                   )
+               "
+           ],
+           "queries": [
+               // Q2
+               "   MATCH 
+                       (person1:Person)-[e1:KNOWS]->(person2:Person), 
+                       (comment:Comment)-[e3:HASCREATOR]->(person1:Person), 
+                       (comment:Comment)-[e4:REPLYOF]->(post:Post),
+                       (post:Post)-[e5:HASCREATOR]->(person2:Person)
+                   FROM v1 
+                   WHERE person1 >= 1159373 AND person1 <= 1159400
+                   RETURN (person1)
+               "
+           ]
+        }
+        ,
+        {
+            "name": "v2",
+            "views": [
+                "   CREATE VIEW v2 ON g (
+                        MATCH
+                            (person1:Person)-[e1:ISLOCATEDIN]->(city1:City),
+                            (city1:City)-[e2:ISPARTOF]->(country:Country),
+                            (person2:Person)-[e3:ISLOCATEDIN]->(city2:City),
+                            (city2:City)-[e4:ISPARTOF]->(country:Country),
+                            (person3:Person)-[e5:ISLOCATEDIN]->(city3:City),
+                            (city3:City)-[e6:ISPARTOF]->(country:Country),
+                            (person1:Person)-[e7:KNOWS]->(person2:Person),
+                            (person2:Person)-[e9:KNOWS]->(person3:Person)
+                        WHERE person1 >= 1159373 AND person1 <= 1159400
+                        CONSTRUCT
+                            (person1:Person)-[e1:ISLOCATEDIN]->(city1:City),
+                            (city1:City)-[e2:ISPARTOF]->(country:Country),
+                            (person2:Person)-[e3:ISLOCATEDIN]->(city2:City),
+                            (city2:City)-[e4:ISPARTOF]->(country:Country),
+                            (person3:Person)-[e5:ISLOCATEDIN]->(city3:City),
+                            (city3:City)-[e6:ISPARTOF]->(country:Country),
+                            (person1:Person)-[e7:KNOWS]->(person2:Person),
+                            (person2:Person)-[e9:KNOWS]->(person3:Person)
+                    )
+                "
+            ],
+            "queries": [
+                // Q2
+                "   MATCH 
+                        (person1:Person)-[e1:ISLOCATEDIN]->(city1:City),
+                        (city1:City)-[e2:ISPARTOF]->(country:Country),
+                        (person2:Person)-[e3:ISLOCATEDIN]->(city2:City),
+                        (city2:City)-[e4:ISPARTOF]->(country:Country),
+                        (person3:Person)-[e5:ISLOCATEDIN]->(city3:City),
+                        (city3:City)-[e6:ISPARTOF]->(country:Country),
+                        (person1:Person)-[e7:KNOWS]->(person2:Person),
+                        (person2:Person)-[e9:KNOWS]->(person3:Person)
+                    FROM v2 
+                    WHERE person1 >= 1159373 AND person1 <= 1159400
+                    RETURN (person1)
+                "
+            ]
+        }
+    ],
+    "testset": {
+        "nodes": [
+            [1, "Person"], [2, "Person"], [3, "Comment"], [4, "Post"],
+            [11, "Person"], [12, "Person"], [13, "Person"],
+            [21, "City"], [22, "City"], [23, "City"], [31, "Country"],
+        ],
+        "edges": [
+            [1000, 1, 2, "KNOWS"], [1001, 2, 1, "KNOWS"],
+            [1002, 3, 1, "HASCREATOR"], [1003, 3, 4, "REPLYOF"],
+            [1004, 4, 2, "HASCREATOR"],
+            [2000, 21, 31, "ISPARTOF"],
+            [2001, 22, 31, "ISPARTOF"],
+            [2002, 23, 31, "ISPARTOF"],
+            [2003, 11, 21, "ISLOCATEDIN"],
+            [2004, 12, 22, "ISLOCATEDIN"],
+            [2005, 13, 23, "ISLOCATEDIN"],
+            [2011, 11, 12, "KNOWS"],
+            [2012, 12, 11, "KNOWS"],
+            [2011, 12, 13, "KNOWS"],
+            [2012, 13, 12, "KNOWS"]
+        ]
+    }
+}
+

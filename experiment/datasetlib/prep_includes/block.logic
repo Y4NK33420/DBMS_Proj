@@ -1,0 +1,5 @@
+// Basic settings
+N_g(nid, label) -> int(nid), string(label).
+E_g(eid, from, to, label) -> int(eid), int(from), int(to), string(label).
+NP_g(nid, property, value) -> int(nid), string(property), string(value).
+EP_g(eid, property, value) -> int(eid), string(property), string(value).

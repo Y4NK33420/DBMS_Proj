@@ -1,0 +1,50 @@
+// CAUTION:
+//  This file is not a valid JSON file because it allows multiline strings and comments for convenience.
+//  Lines that start with two slashes (//) are commented out.
+{
+    "schema": {
+        "nodes": [
+            "W", "S", "L"
+        ],
+        "edges": [
+            ["WS", "W", "S"], ["SL", "S", "L"], ["A", "L", "L"]
+        ]
+    },
+    "constraints": [
+    ],
+    "workload": [
+        {
+            "name": "v1",
+                "views": [
+                    // V1 - merging
+                    "   CREATE VIEW v1 ON g WITH DEFAULT MAP (
+                            MATCH (w:W)-[ws:WS]->(s:S)
+                            CONSTRUCT (m:MS)
+                            MAP FROM w, s TO m
+                            SET m = SK(\"ff\", s)
+                            DELETE ws
+                        )
+                    "
+                ], 
+                "queries": [
+                    // Q1
+                    "   MATCH (m:MS)-[sl:SL]->(l:L) FROM v1 WHERE l < 100 RETURN (l)",
+                    // Q2
+                    "   MATCH (m:MS)-[sl:SL]->(l:L) FROM v1 WHERE l < 150 RETURN (l)"
+                ]
+         } 
+    ],
+    "testset": {
+        "nodes": [
+            [1, "W"], [2, "S"], [3, "L"],
+            [11, "W"], [12, "S"], [13, "L"]
+        ],
+        "edges": [
+            [100, 1, 2, "WS"], [101, 2, 3, "SL"],
+            [110, 11, 12, "WS"], [111, 12, 13, "SL"]
+        ]
+    }
+}
+
+
+

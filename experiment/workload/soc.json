@@ -1,0 +1,69 @@
+// CAUTION: 
+//  This file is not a valid JSON file because it allows multiline strings and comments for convenience.
+//  Lines that start with two slashes (//) are commented out.
+{
+    "name": "soc",
+    "schema": {
+        "nodes": [
+            "A", "B", "C", "D", "F", "H", "S", "T"
+        ],
+        "edges": [
+            ["X", "A", "B"], ["X", "B", "C"], ["X", "C", "D"], ["Y", "C", "D"], ["X", "D", "F"], ["X", "F", "H"]
+        ]
+    },
+    "constraints": [
+                "N(c,l),N(d1,l1),N(d2,l2),E(e1,c,d1,l3),E(e2,c,d2,l4) -> d1=d2, l1=l2, e1=e2, l3=l4",
+                "N(d,l),N(c1,l1),N(c2,l2),E(e1,c1,d,l3),E(e2,c1,d,l4) -> c1=c2, l1=l2, e1=e2, l3=l4"
+    ],
+    "workload": [
+        {
+	    "name": "v1", 
+    	"views": [
+                // V1 - Recommend a friend of my friend who is not already my friend.
+                "   CREATE VIEW v1 ON g WITH DEFAULT MAP (
+                        MATCH (p1:U)-[f1:F]->(p2:U), (p2)-[f2:F]->(p3:U), !(p1)-[f3:F]->(p3)
+                        WHERE p1 != p3 AND p1 < 100000
+                        CONSTRUCT (p1:U)-[r:R]->(p3:U)
+                        SET r = SK(\"rr\", p1, p3)
+                    )
+                ",
+                // V2 - delete some people"
+                "   CREATE VIEW v2 ON v1 WITH DEFAULT MAP (
+                        MATCH (p1:U)
+                        WHERE p1 < 501
+                        DELETE p1
+                    )
+                "
+            ],
+            "queries": [
+                // Q1 - recommend my friend's friend.
+                "   MATCH (p1:U)-[r:R]->(p2:U) 
+                    FROM v2
+                    WHERE p1 < 5000 
+                    RETURN (p2)
+                ",
+                // Q2 - Find my friend who is recommended by someone who was recommended by my friend.
+                "   MATCH (p1:U)-[r1:R]->(p2:U), (p2)-[r2:R]->(p3:U), (p1)-[r3:F]->(p3)
+                    FROM v2 
+                    WHERE p1 < 30000 AND p1 != p3 RETURN (p3)
+                "
+            ]
+        }
+    ],
+    "testset": {
+        "nodes": [
+            [1, "U"], [2, "U"], [3, "U"],
+            [11, "U"], [12, "U"], [13, "U"],
+            [501, "U"], [502, "U"], [503, "U"],
+            [601, "U"], [602, "U"], [603, "U"]
+        ],
+        "edges": [
+            [101, 1, 2, "F"], [102, 2, 3, "F"],
+            [103, 11, 12, "F"], [104, 12, 13, "F"], [105, 11, 13, "F"], 
+            [106, 501, 502, "F"], [107, 502, 503, "F"],
+            [201, 601, 602, "F"], [202, 602, 603, "F"],
+            [108, 503, 601, "F"],
+            [109, 501, 602, "F"]
+        ]
+    }
+}

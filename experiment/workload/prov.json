@@ -1,0 +1,70 @@
+
+// CAUTION:
+//  This file is not a valid JSON file because it allows multiline strings and comments for convenience.
+//  Lines that start with two slashes (//) are commented out.
+{
+    "schema": {
+        "nodes": [
+            "R", "U", "AC", "AR"
+        ],
+        "edges": [
+            ["DERBY", "R", "R"], ["ASSOC", "R", "U"]
+        ]
+    },
+    "constraints": [
+    ],
+    "workload": [
+        // Workload 2: In parallel mode
+        {
+                "name": "prov1",
+                "views": [
+                // zoom in and out
+                "   CREATE VIEW prov1 ON g WITH DEFAULT MAP (
+                        MATCH (e2:E)-[d:DERBY]->(e1:E), !(e1:E)-[k2:DERBY]->(_:E)
+                        WHERE e1 < 30
+                        CONSTRUCT (a:REVISION)-[u:USED]->(e1:E), (e2:E)-[g:GENBY]->(a:REVISION)
+                        // MAP FROM e2, e1 TO a
+                        SET a = SK(\"rev\", d), u = SK(\"used\", d), g = SK(\"genby\", d)
+                        //DELETE d
+                            UNION
+                        MATCH (e2:E)-[d1:DERBY]->(e1:E), (e3:E)-[d2:DERBY]->(e2:E)
+                        //, !(e1:E)-[k1:DERBY]->(_:E)
+                        WHERE e1 > 100 AND e1 < 130
+                        CONSTRUCT (e3:E)-[u:MULTIDERBY2]->(e1:E)
+                        SET u = SK(\"multi\", e1, e3)
+                        //DELETE e2
+                    )
+                "
+            ],
+            "queries": [
+                // Q1
+                "   MATCH (a:REVISION)-[u:USED]->(e1:E), (e2:E)-[g:GENBY]->(a:REVISION)
+                    FROM prov1
+                    WHERE e1 < 500
+                    RETURN (a)
+                ",
+                // Q2
+                "   MATCH (e2:E)-[u:MULTIDERBY2]->(e1:E)
+                    FROM prov1
+                    WHERE e1 < 500
+                    RETURN (e1)
+                "
+            ]
+        }
+    ],
+    "testset": {
+        "nodes": [
+            [1, "E"], [2, "E"],
+            [111, "E"], [112, "E"], [113, "E"],
+            [121, "E"], [122, "E"], [123, "E"], [124, "E"]
+        ],
+        "edges": [
+            [1000, 2, 1, "DERBY"],
+            [1011, 112, 111, "DERBY"], [1012, 113, 112, "DERBY"],
+            [1021, 122, 121, "DERBY"], [1022, 123, 122, "DERBY"], [1023, 124, 123, "DERBY"]
+        ]
+    }
+}
+
+
+

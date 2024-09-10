@@ -1,0 +1,61 @@
+// CAUTION: 
+//  This file is not a valid JSON file because it allows multiline strings and comments for convenience.
+//  Lines that start with two slashes (//) are commented out.
+{
+    "schema": {
+        "nodes": [
+            "A", "P", "V"
+        ],
+        "edges": [
+            ["W", "P", "A"], ["P", "P", "V"]
+        ]
+    },
+    "constraints": [
+    ],
+    "workload": [
+        {
+		"name": "v1", 
+            "views": [
+                // 
+                "   CREATE VIEW v1 ON g WITH DEFAULT MAP (
+                        MATCH (p:P)-[e1:W]->(a:A), (p:P)-[e2:P]->(v:V)
+                        WHERE a > 2575 AND a < 2590
+                        CONSTRUCT (a:A)-[e3:PUBVEN]->(v:V)
+                        SET e3 = SK(\"kk1\", a, v)
+                            UNION
+                        MATCH (p:P)-[e1:W]->(a1:A), (p:P)-[e2:W]->(a2:A)
+                        WHERE a1 < 10 AND a2 < 7000 AND a1 != a2
+                        CONSTRUCT (a1:A)-[e3:COAUTHOR]->(a2:A)
+                        SET e3 = SK(\"kk2\", a1, a2)
+                    )
+                "
+            ],
+            "queries": [
+                // Q1
+                "   MATCH (a:A)-[e3:PUBVEN]->(v:V) 
+                    FROM v1 
+                    WHERE a > 2580 AND a < 2587
+                    RETURN (a)
+                ",
+                // Q2
+                "   MATCH (a1:A)-[r:COAUTHOR]->(a2:A) 
+                    FROM v1 
+                    WHERE a1 < 9
+                    RETURN (a2)
+                "
+            ]
+        }
+    ],
+    "testset": {
+        "nodes": [
+            [1, "P"], [2, "A"], [3, "V"],
+            [11, "P"], [2585, "A"], [13, "V"]
+        ],
+        "edges": [
+            [100, 1, 2, "W"], [101, 1, 3, "P"], 
+            [110, 11, 2585, "W"], [111, 11, 13, "P"],
+            [120, 11, 2, "W"]
+        ]
+    }
+}
+

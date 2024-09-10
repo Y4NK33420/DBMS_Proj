@@ -1,0 +1,27 @@
+// CAUTION: 
+//  This file is not a valid JSON file because it allows multiline strings and comments for convenience.
+//  Lines that start with two slashes (//) are commented out.
+{
+    "configFilePath": "conf/graphview.conf",
+    "testmode": false,
+    "printRules": true,
+    "printTiming": false,
+    "printConsole": true,
+    "expIteration": 1,
+    "platforms": ["lb"],
+    //["lb", "pg", "n4"],
+    "viewtypes": ["ssr"],
+    //["mv", "hv", "vv", "ssr"],    
+    "constraints": [
+        // default constraints
+        "N(c,l),N(d1,l1),N(d2,l2),E(e1,c,d1,l3),E(e2,c,d2,l4) -> d1=d2, l1=l2, e1=e2, l3=l4",
+        "N(d,l),N(c1,l1),N(c2,l2),E(e1,c1,d,l3),E(e2,c1,d,l4) -> c1=c2, l1=l2, e1=e2, l3=l4"
+    ],
+    "datasets": [
+        "test", "soc", "prov", "oag", "word", "lsqb"
+    ],
+    "datasets_execute": [
+        // true if the dataset is executed in the experiment
+        false, false, true, false, false, false
+    ]
+}

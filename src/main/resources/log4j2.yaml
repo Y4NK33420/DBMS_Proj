@@ -1,0 +1,25 @@
+Configuration:
+  Appenders:
+    Console:
+      PatternLayout:
+#        pattern: '%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n'
+        pattern: '%-5level %c{2} - %msg%n'
+      name: Console
+      target: SYSTEM_OUT
+    File:
+      PatternLayout:
+        pattern: '%-5level %c{2} - %msg%n'
+      name: File
+      fileName: logs/app.log
+  Loggers:
+    Root:
+      AppenderRef:
+       - ref: Console
+  #      - ref: File
+      level: none
+   #   level: info
+ #    level: none      
+      #none debug
+      #trace
+      
+      
