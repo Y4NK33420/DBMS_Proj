@@ -5,7 +5,7 @@
  * For convenience, we refer to the prototype system implementation described in the paper as PGVIEW.
 
 ## Setup  
-We outline the installation process for a newly installed Ubuntu Server 22.04.4 LTS, using a user account named ```pgview``` with a home directory located at ```/home/pgview```. 
+We outline the installation process for a newly installed Ubuntu Server 22.04.4 LTS. You may need sudo privileges to install some packages.
 
 We use the ```tools``` directory within the home directory to download and install necessary tools.
 
@@ -22,7 +22,7 @@ Z3 is a theorem prover from Microsoft Research.
  > cd ~/tools \
   wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.7/z3-4.8.7-x64-ubuntu-16.04.zip \
   unzip z3-4.8.7-x64-ubuntu-16.04.zip \
-  mvn install:install-file -Dfile=/home/pgview/tools/z3-4.8.7-x64-ubuntu-16.04/bin/com.microsoft.z3.jar -DgroupId=com.microsoft -DartifactId=z3 -Dversion=4.8.7 -Dpackaging=jar -DgeneratePom=true
+  mvn install:install-file -Dfile=${HOME}/tools/z3-4.8.7-x64-ubuntu-16.04/bin/com.microsoft.z3.jar -DgroupId=com.microsoft -DartifactId=z3 -Dversion=4.8.7 -Dpackaging=jar -DgeneratePom=true
 
 ### Install LogicBlox
 LogicBlox is a Datalog-native DBMS.

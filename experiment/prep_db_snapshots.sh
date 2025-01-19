@@ -4,6 +4,7 @@ configtemp=config7.temp
 sed -e 's/#.*//' -e '/^$/d' ../conf/graphview.conf | awk '/^\[/ { app=substr($0,2,length-2) } /=/ { print app "." $0 }' > ${configtemp}
 neo4jFolder=$(cat ${configtemp} | grep 'neo4j.dir' | cut -d "=" -f2 | awk '{$1=$1};1')
 LB_BASEDIR=$(cat ${configtemp} | grep 'logicblox.lb_bin_dir' | cut -d "=" -f2 | awk '{$1=$1};1')
+LB_BASEDIR=${LB_BASEDIR/\~/${HOME}}
 
 rm ${configtemp}
 
