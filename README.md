@@ -5,7 +5,7 @@
  * For convenience, we refer to the prototype system implementation described in the paper as PGVIEW.
 
 ## Setup  
-We outline the installation process for a newly installed Ubuntu Server 22.04.4 LTS. You may need sudo privileges to install some packages.
+We outline the installation process for a newly installed Ubuntu Server 22.04.5 LTS. You may need sudo privileges to install some packages.
 
 We use the ```tools``` directory within the home directory to download and install necessary tools.
 
