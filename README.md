@@ -12,31 +12,42 @@ We use the ```tools``` directory within the home directory to download and insta
   > mkdir ~/tools
 
 ### Install basic packages
-   > sudo apt-get install openjdk-11-jdk \
-    sudo apt install maven \
-    sudo apt install unzip
+   > sudo apt-get install openjdk-11-jdk
+   
+   > sudo apt install maven 
+   
+   > sudo apt install unzip
 
 ### Install Z3 library
 Z3 is a theorem prover from Microsoft Research.
 
- > cd ~/tools \
-  wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.7/z3-4.8.7-x64-ubuntu-16.04.zip \
-  unzip z3-4.8.7-x64-ubuntu-16.04.zip \
-  mvn install:install-file -Dfile=${HOME}/tools/z3-4.8.7-x64-ubuntu-16.04/bin/com.microsoft.z3.jar -DgroupId=com.microsoft -DartifactId=z3 -Dversion=4.8.7 -Dpackaging=jar -DgeneratePom=true
+ > cd ~/tools
+ 
+ > wget https://github.com/Z3Prover/z3/releases/download/z3-4.8.7/z3-4.8.7-x64-ubuntu-16.04.zip
+ 
+ > unzip z3-4.8.7-x64-ubuntu-16.04.zip
+ 
+ > mvn install:install-file -Dfile=${HOME}/tools/z3-4.8.7-x64-ubuntu-16.04/bin/com.microsoft.z3.jar -DgroupId=com.microsoft -DartifactId=z3 -Dversion=4.8.7 -Dpackaging=jar -DgeneratePom=true
 
 ### Install LogicBlox
 LogicBlox is a Datalog-native DBMS.
 #### Download and Install LogicBlox 4.41.0
- > cd ~/tools \
-  wget https://web.archive.org/web/20230723162235/https://developer.logicblox.com/wp-content/uploads/2022/04/logicblox-linux-4.41.0.tar_.gz \
-  tar xvfz logicblox-linux-4.41.0.tar_.gz \
-  mv logicblox-x86_64-linux-4.41.0-b6f5db3debd8e24b2d562d2a2078938d7003b06c/ logicblox
+ > cd ~/tools
+ 
+ > wget https://web.archive.org/web/20230723162235/https://developer.logicblox.com/wp-content/uploads/2022/04/logicblox-linux-4.41.0.tar_.gz
+ 
+ > tar xvfz logicblox-linux-4.41.0.tar_.gz
+ 
+ > mv logicblox-x86_64-linux-4.41.0-b6f5db3debd8e24b2d562d2a2078938d7003b06c/ logicblox
 
  #### Setup LogicBlox before starting LogicBlox
- > cd ~/tools/logicblox \
-  source etc/profile.d/logicblox.sh \
-  source etc/bash_completion.d/logicblox.sh \
-  export LB_MEM=12G \# To set the buffer memory size
+ > cd ~/tools/logicblox
+ 
+ > source etc/profile.d/logicblox.sh
+ 
+ > source etc/bash_completion.d/logicblox.sh
+ 
+ > export LB_MEM=12G \# To set the buffer memory size
 
  #### How to Start LogicBlox
  > lb services start
@@ -47,7 +58,8 @@ PostgreSQL is an open-source relational DBMS supporting SQL.
   > sudo apt install postgresql-14
 #### How to setup Postgresql
 You can set your postgres account your own account and set it in the confiugration file described later. 
- * We describe how to use the ```postgres``` account and change its password to ```postgres@```. 
+ 
+ We describe how to use the ```postgres``` account and change its password to ```postgres@```. 
  > sudo su - postgres
 
  > psql -U postgres
@@ -71,9 +83,11 @@ Neo4j is a widely used graph database system and supports the Cypher graph query
 
 PGVIEW includes an embedded Neo4j server, so you don't need to install a separate Neo4j instance to run it. However, you'll need a standalone Neo4j installation to create experimental Neo4j database snapshots. The installed directory is ```~/tools/neo4j-community-4.1.11```.
 
-  > cd ~/tools \
-   wget https://dist.neo4j.org/neo4j-community-4.1.11-unix.tar.gz \
-   tar xvfz neo4j-community-4.1.11-unix.tar.gz
+  > cd ~/tools
+  
+  > wget https://dist.neo4j.org/neo4j-community-4.1.11-unix.tar.gz
+  
+  > tar xvfz neo4j-community-4.1.11-unix.tar.gz
 
 
 
@@ -81,8 +95,9 @@ PGVIEW includes an embedded Neo4j server, so you don't need to install a separat
 This outlines how to install and execute PGVIEW.
 
 We use the ```src``` directory within the home directory as the base directory.
-> mkdir ~/src \
- cd ~/src
+> mkdir ~/src
+
+> cd ~/src
 
 Step 1. Clone the repository.
 > git clone https://github.com/PennGraphDB/pg-view.git
@@ -90,8 +105,9 @@ Step 1. Clone the repository.
 Note: If you are unzipping the downloaded source code archive instead of cloning the repository, set the source code directory to ```pg-view``` under ```~/src```.
 
 Setp 2. Use Maven to compile the source code.
- > cd pg-view \
-  mvn compile
+ > cd pg-view
+ 
+ > mvn compile
 
 Step 3. Configure the ```conf/graphview.conf``` file as needed. No changes should be necessary if you've followed these instructions precisely.
 
@@ -122,10 +138,3 @@ Step 1: Download and prepare the dataset (approximately 25 minutes on the test m
  Step 2: Run experiments 
  
   > ./run.sh -i 1 -p lb -v mv -d word
-
-
-<!--
- Step 3: Collect data, then create tables and graphs.
-
-  > ./report.sh
--->
