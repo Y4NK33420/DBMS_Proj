@@ -87,6 +87,8 @@ We use the ```src``` directory within the home directory as the base directory.
 Step 1. Clone the repository.
 > git clone https://github.com/PennGraphDB/pg-view.git
 
+Note: If you are unzipping the downloaded source code archive instead of cloning the repository, set the source code directory to ```pg-view``` under ```~/src```.
+
 Setp 2. Use Maven to compile the source code.
  > cd pg-view \
   mvn compile
