@@ -49,15 +49,19 @@ PostgreSQL is an open-source relational DBMS supporting SQL.
 You can set your postgres account your own account and set it in the confiugration file described later. 
  * We describe how to use the ```postgres``` account and change its password to ```postgres@```. 
  > sudo su - postgres
+
  > psql -U postgres
 
  In the PSQL shell, enter the following
  > alter user postgres with password 'postgres@';
 
- Exit from the PSQL shell, and modify '''pg_hba.conf''' and change to md5 from peer
+ Exit the PSQL shell and return to your original user account. Then, modify ```pg_hba.conf``` and change to ```md5``` from ```peer```
  > sudo vi /etc/postgresql/14/main/pg_hba.conf
- > Database administrative login by Unix domain socket
- > local      all              postgres                                md5  # was 'peer'
+
+ ```
+ Database administrative login by Unix domain socket
+ local      all              postgres                                md5  # was 'peer'
+ ```
 
  Then restart the PostgreSQL server,
  > sudo service postgresql restart
