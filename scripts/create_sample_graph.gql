@@ -1,0 +1,171 @@
+-- Sample GQL Script: Create a simple knowledge graph
+-- Usage: mvn exec:java@console -Dexec.args="scripts/create_sample_graph.gql"
+
+-- Connect to PostgreSQL platform
+connect pg;
+
+-- Create a new graph database
+create graph SampleKnowledgeGraph;
+
+-- Use the newly created graph
+use SampleKnowledgeGraph;
+
+-- Define schema: Node types
+add node Person;
+add node Company;
+add node Product;
+add node City;
+
+-- Define schema: Edge types
+add edge works_at Person Company;
+add edge knows Person Person;
+add edge bought Person Product;
+add edge lives_in Person City;
+add edge located_in Company City;
+
+-- Insert Person nodes
+insert N(1, "Person");
+insert N(2, "Person");
+insert N(3, "Person");
+insert N(4, "Person");
+insert N(5, "Person");
+
+-- Insert Person properties
+insert NP(1, "name", "Alice Smith");
+insert NP(1, "age", "28");
+insert NP(1, "email", "alice@example.com");
+
+insert NP(2, "name", "Bob Johnson");
+insert NP(2, "age", "35");
+insert NP(2, "email", "bob@example.com");
+
+insert NP(3, "name", "Carol Williams");
+insert NP(3, "age", "42");
+insert NP(3, "email", "carol@example.com");
+
+insert NP(4, "name", "David Brown");
+insert NP(4, "age", "31");
+insert NP(4, "email", "david@example.com");
+
+insert NP(5, "name", "Eve Davis");
+insert NP(5, "age", "29");
+insert NP(5, "email", "eve@example.com");
+
+-- Insert Company nodes
+insert N(101, "Company");
+insert N(102, "Company");
+
+insert NP(101, "name", "TechCorp Inc");
+insert NP(101, "industry", "Technology");
+insert NP(101, "size", "Large");
+
+insert NP(102, "name", "DataSystems LLC");
+insert NP(102, "industry", "Software");
+insert NP(102, "size", "Medium");
+
+-- Insert Product nodes
+insert N(201, "Product");
+insert N(202, "Product");
+insert N(203, "Product");
+
+insert NP(201, "name", "Laptop Pro");
+insert NP(201, "price", "1299.99");
+insert NP(201, "category", "Electronics");
+
+insert NP(202, "name", "Wireless Mouse");
+insert NP(202, "price", "29.99");
+insert NP(202, "category", "Accessories");
+
+insert NP(203, "name", "4K Monitor");
+insert NP(203, "price", "499.99");
+insert NP(203, "category", "Electronics");
+
+-- Insert City nodes
+insert N(301, "City");
+insert N(302, "City");
+
+insert NP(301, "name", "San Francisco");
+insert NP(301, "state", "CA");
+insert NP(301, "population", "874961");
+
+insert NP(302, "name", "New York");
+insert NP(302, "state", "NY");
+insert NP(302, "population", "8336817");
+
+-- Insert edges: works_at
+insert E(1001, 1, 101, "works_at");
+insert EP(1001, "role", "Engineer");
+insert EP(1001, "since", "2020");
+
+insert E(1002, 2, 101, "works_at");
+insert EP(1002, "role", "Manager");
+insert EP(1002, "since", "2018");
+
+insert E(1003, 3, 102, "works_at");
+insert EP(1003, "role", "Director");
+insert EP(1003, "since", "2015");
+
+insert E(1004, 4, 102, "works_at");
+insert EP(1004, "role", "Analyst");
+insert EP(1004, "since", "2021");
+
+-- Insert edges: knows
+insert E(2001, 1, 2, "knows");
+insert EP(2001, "since", "2020");
+insert EP(2001, "relationship", "colleague");
+
+insert E(2002, 1, 5, "knows");
+insert EP(2002, "since", "2019");
+insert EP(2002, "relationship", "friend");
+
+insert E(2003, 2, 3, "knows");
+insert EP(2003, "since", "2018");
+insert EP(2003, "relationship", "acquaintance");
+
+insert E(2004, 3, 4, "knows");
+insert EP(2004, "since", "2021");
+insert EP(2004, "relationship", "colleague");
+
+-- Insert edges: bought
+insert E(3001, 1, 201, "bought");
+insert EP(3001, "date", "2024-01-15");
+insert EP(3001, "price_paid", "1199.99");
+
+insert E(3002, 2, 202, "bought");
+insert EP(3002, "date", "2024-02-20");
+insert EP(3002, "price_paid", "29.99");
+
+insert E(3003, 5, 203, "bought");
+insert EP(3003, "date", "2024-03-10");
+insert EP(3003, "price_paid", "479.99");
+
+-- Insert edges: lives_in
+insert E(4001, 1, 301, "lives_in");
+insert E(4002, 2, 301, "lives_in");
+insert E(4003, 3, 302, "lives_in");
+insert E(4004, 4, 302, "lives_in");
+insert E(4005, 5, 301, "lives_in");
+
+-- Insert edges: located_in
+insert E(5001, 101, 301, "located_in");
+insert E(5002, 102, 302, "located_in");
+
+-- Print schema
+schema;
+
+-- Sample query: Find all people and their companies
+MATCH (p:Person)-[w:works_at]->(c:Company) FROM g RETURN (p),(w),(c);
+
+-- Sample query: Find social network
+MATCH (p1:Person)-[k:knows]->(p2:Person) FROM g RETURN (p1),(k),(p2);
+
+-- Create a view: Colleagues who know each other
+CREATE virtual VIEW ColleaguesView ON g (
+  MATCH (p1:Person)-[w1:works_at]->(c:Company),
+        (p2:Person)-[w2:works_at]->(c:Company),
+        (p1)-[k:knows]->(p2)
+);
+
+-- List all views
+views;
+

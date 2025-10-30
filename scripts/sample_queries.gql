@@ -1,0 +1,159 @@
+-- Sample Queries for PG-View
+-- These queries demonstrate various graph query patterns
+
+-- Prerequisites: Run create_sample_graph.gql first
+-- Usage: Copy-paste queries into Web UI Query tab or use mvn exec:java@console
+
+-- ============================================
+-- BASIC QUERIES
+-- ============================================
+
+-- Query 1: Find all persons
+MATCH (p:Person) FROM g RETURN (p);
+
+-- Query 2: Find all edges
+MATCH (a)-[e]->(b) FROM g RETURN (a),(e),(b);
+
+-- Query 3: Find all Person nodes with specific type
+MATCH (p:Person) FROM g RETURN (p);
+
+-- ============================================
+-- RELATIONSHIP QUERIES
+-- ============================================
+
+-- Query 4: Who works at which company?
+MATCH (p:Person)-[w:works_at]->(c:Company) FROM g RETURN (p),(w),(c);
+
+-- Query 5: Social network (who knows whom?)
+MATCH (p1:Person)-[k:knows]->(p2:Person) FROM g RETURN (p1),(k),(p2);
+
+-- Query 6: What did people buy?
+MATCH (p:Person)-[b:bought]->(prod:Product) FROM g RETURN (p),(b),(prod);
+
+-- Query 7: Where do people live?
+MATCH (p:Person)-[l:lives_in]->(c:City) FROM g RETURN (p),(l),(c);
+
+-- ============================================
+-- MULTI-HOP QUERIES
+-- ============================================
+
+-- Query 8: Find colleagues (people working at same company)
+MATCH (p1:Person)-[w1:works_at]->(c:Company),
+      (p2:Person)-[w2:works_at]->(c:Company)
+FROM g RETURN (p1),(c),(p2);
+
+-- Query 9: Find people in same city
+MATCH (p1:Person)-[l1:lives_in]->(city:City),
+      (p2:Person)-[l2:lives_in]->(city:City)
+FROM g RETURN (p1),(city),(p2);
+
+-- Query 10: Find friends of friends
+MATCH (p1:Person)-[k1:knows]->(p2:Person)-[k2:knows]->(p3:Person)
+FROM g RETURN (p1),(p2),(p3);
+
+-- ============================================
+-- PATH QUERIES
+-- ============================================
+
+-- Query 11: People who live in same city as their company
+MATCH (p:Person)-[l:lives_in]->(city:City),
+      (p)-[w:works_at]->(c:Company),
+      (c)-[loc:located_in]->(city)
+FROM g RETURN (p),(city),(c);
+
+-- Query 12: Company -> City -> Residents
+MATCH (c:Company)-[loc:located_in]->(city:City),
+      (p:Person)-[l:lives_in]->(city)
+FROM g RETURN (c),(city),(p);
+
+-- ============================================
+-- VIEW CREATION EXAMPLES
+-- ============================================
+
+-- View 1: Simple selection view (filter by type)
+CREATE virtual VIEW PersonsOnlyView ON g (
+  MATCH (p:Person)
+);
+
+-- View 2: Social network view
+CREATE virtual VIEW SocialNetworkView ON g (
+  MATCH (p1:Person)-[k:knows]->(p2:Person)
+);
+
+-- View 3: Employment network
+CREATE virtual VIEW EmploymentView ON g (
+  MATCH (p:Person)-[w:works_at]->(c:Company)
+);
+
+-- View 4: Multi-hop view - Colleagues who know each other
+CREATE virtual VIEW ColleaguesWhoKnowView ON g (
+  MATCH (p1:Person)-[w1:works_at]->(c:Company),
+        (p2:Person)-[w2:works_at]->(c:Company),
+        (p1)-[k:knows]->(p2)
+);
+
+-- View 5: Complex view with multiple relationships
+CREATE virtual VIEW CityNetworkView ON g (
+  MATCH (p:Person)-[l:lives_in]->(city:City),
+        (p)-[w:works_at]->(c:Company)
+);
+
+-- ============================================
+-- QUERYING VIEWS
+-- ============================================
+
+-- Query view: All persons from PersonsOnlyView
+MATCH (p) FROM PersonsOnlyView RETURN (p);
+
+-- Query view: Social connections
+MATCH (p1)-[k]->(p2) FROM SocialNetworkView RETURN (p1),(k),(p2);
+
+-- Query view: Employment data
+MATCH (p)-[w]->(c) FROM EmploymentView RETURN (p),(w),(c);
+
+-- ============================================
+-- UTILITY COMMANDS
+-- ============================================
+
+-- List all graphs
+list;
+
+-- Show schema
+schema;
+
+-- Show all views
+views;
+
+-- Show Datalog program
+program;
+
+-- ============================================
+-- ADVANCED EXAMPLES
+-- ============================================
+
+-- Complex multi-pattern query
+MATCH (p:Person)-[w:works_at]->(c:Company),
+      (p)-[l:lives_in]->(city:City),
+      (p)-[k:knows]->(friend:Person)
+FROM g RETURN (p),(c),(city),(friend);
+
+-- Query with multiple edge types
+MATCH (p:Person)-[w:works_at]->(c:Company),
+      (p)-[b:bought]->(prod:Product)
+FROM g RETURN (p),(c),(prod);
+
+-- Nested relationship
+MATCH (p1:Person)-[k1:knows]->(p2:Person),
+      (p2)-[k2:knows]->(p3:Person),
+      (p1)-[w:works_at]->(c:Company)
+FROM g RETURN (p1),(p2),(p3),(c);
+
+-- ============================================
+-- NOTES
+-- ============================================
+-- 1. All queries use the base graph 'g' or a view name
+-- 2. Node variables need type labels (e.g., p:Person)
+-- 3. Edge variables can optionally have type labels
+-- 4. RETURN clause should have parentheses around each variable
+-- 5. Property queries use NP_g and EP_g tables directly (via execute command)
+
