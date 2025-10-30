@@ -1030,13 +1030,79 @@
                 `;
 
                     // Use execute endpoint with raw SQL (not supported yet)
-                    // For now, generate sample data
-                    generateSampleVisualization(limit);
+                    // Check if current graph is MovieLens
+                    if (dbName && dbName.toLowerCase() === 'movielens') {
+                        await visualizeMovieLens(limit);
+                    } else {
+                        generateSampleVisualization(limit);
+                    }
 
                 } catch (error) {
                     console.error('Error:', error);
-                    generateSampleVisualization(limit);
+                    // Check if current graph is MovieLens
+                    const statusResponse = await fetch(`${API_URL}/status`);
+                    const status = await statusResponse.json();
+                    if (status.currentGraph && status.currentGraph.toLowerCase() === 'movielens') {
+                        await visualizeMovieLens(limit);
+                    } else {
+                        generateSampleVisualization(limit);
+                    }
                 }
+            }
+
+            async function fetchMovieLensData(limit) {
+                try {
+                    // Try to fetch from visualization endpoint
+                    const response = await fetch('http://localhost:8081/viz/movielens');
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.success) {
+                            return data;
+                        }
+                    }
+                } catch (error) {
+                    console.log('Viz endpoint not available, using sample data');
+                }
+                return null;
+            }
+
+            async function visualizeMovieLens(limit) {
+                const data = await fetchMovieLensData(limit);
+                
+                if (data && data.nodes && data.edges) {
+                    // Transform data for vis.js
+                    const colors = {
+                        'Movie': '#3498db',    // Blue
+                        'User': '#9b59b6',     // Purple
+                        'Genre': '#e67e22'     // Orange
+                    };
+                    
+                    const nodes = data.nodes.map(n => ({
+                        id: n.id,
+                        label: n.properties.title || n.properties.name || `${n.label} ${n.id}`,
+                        title: `Type: ${n.label}<br>ID: ${n.id}<br>` + 
+                               Object.entries(n.properties).map(([k,v]) => `${k}: ${v}`).join('<br>'),
+                        color: colors[n.label] || '#95a5a6',
+                        shape: 'dot',
+                        size: n.label === 'Genre' ? 30 : 20
+                    }));
+                    
+                    const edges = data.edges.map(e => ({
+                        id: e.id,
+                        from: e.from,
+                        to: e.to,
+                        label: e.label,
+                        arrows: 'to',
+                        color: { color: e.label === 'RATED' ? '#9b59b6' : '#e67e22' },
+                        dashes: e.label === 'HAS_GENRE'
+                    }));
+                    
+                    renderVisualization(nodes, edges);
+                    return;
+                }
+                
+                // Fallback to sample data
+                generateSampleVisualization(limit);
             }
 
             function generateSampleVisualization(limit) {
