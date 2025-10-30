@@ -1,0 +1,27 @@
+connect sd;
+create graph SkolemTest;
+use SkolemTest;
+
+create node Person;
+create node Group;
+create edge Knows(Person -> Person);
+create edge Member(Person -> Group);
+create edge InGroup(Group -> Group);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+
+CREATE virtual VIEW GroupView ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  ADD (a:Person)-[SK("membership",a):Member]->(SK("group",a,b):Group)
+  ADD (b:Person)-[SK("membership",b):Member]->(SK("group",a,b):Group)
+  ADD (SK("group",a,b):Group)-[SK("relation",a,b):InGroup]->(SK("group",a,b):Group)
+); 
+
+MATCH (a:Person)-[x:Member]->(g:Group) FROM GroupView RETURN (a),(g),(x);
+
+quit;
+

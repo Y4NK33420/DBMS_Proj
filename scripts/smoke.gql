@@ -1,0 +1,18 @@
+connect sd;
+create graph TEST;
+use TEST;
+
+create node Person;
+create edge Knows(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+
+schema;
+
+MATCH (a:Person)-[x:Knows]->(b:Person) FROM g RETURN (a),(b),(x);
+
+quit;

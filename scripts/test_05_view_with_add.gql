@@ -1,0 +1,23 @@
+connect sd;
+create graph AddTest;
+use AddTest;
+
+create node Person;
+create edge Knows(Person -> Person);
+create edge Friend(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+
+CREATE virtual VIEW WithFriends ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  ADD (a:Person)-[SK("friend_edge",a,b):Friend]->(b:Person)
+); 
+
+MATCH (a:Person)-[y:Friend]->(b:Person) FROM WithFriends RETURN (a),(b),(y);
+
+quit;
+

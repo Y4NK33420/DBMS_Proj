@@ -1,0 +1,15 @@
+connect pg;
+create graph PGTest;
+use PGTest;
+
+create node Person;
+create edge Knows(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert E(10,1,2,"Knows");
+
+MATCH (a:Person)-[x:Knows]->(b:Person) FROM g RETURN (a),(b),(x);
+
+quit;
+

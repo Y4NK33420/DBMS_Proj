@@ -1,0 +1,27 @@
+connect sd;
+create graph TEST;
+use TEST;
+
+create node Person;
+create edge Knows(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+
+schema;
+
+CREATE VIEW v1 WITH DEFAULT MAP (
+ MATCH (a:Person)-[x:Knows]->(b:Person)
+ CONSTRUCT (a:Person)-[y:Knows]->(b:Person)
+ SET y = SK("copy", x)
+);
+
+views;
+program;
+
+MATCH (a:Person)-[y:Knows]->(b:Person) FROM v1 RETURN (a),(b),(y);
+
+quit;

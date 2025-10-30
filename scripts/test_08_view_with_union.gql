@@ -1,0 +1,29 @@
+connect sd;
+create graph UnionTest;
+use UnionTest;
+
+create node Person;
+create node Contact;
+create edge Knows(Person -> Person);
+create edge WorksWith(Person -> Person);
+create edge ContactOf(Contact -> Contact);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert N(4,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,3,4,"WorksWith");
+
+CREATE virtual VIEW AllContacts ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  CONSTRUCT (a:Contact)-[x:ContactOf]->(b:Contact)
+  UNION
+  MATCH (a:Person)-[y:WorksWith]->(b:Person)
+  CONSTRUCT (a:Contact)-[y:ContactOf]->(b:Contact)
+); 
+
+MATCH (a:Contact)-[x:ContactOf]->(b:Contact) FROM AllContacts RETURN (a),(b),(x);
+
+quit;
+

@@ -90,8 +90,14 @@ public class Postgres {
 		Util.writeToFile("test.sql", query + "\n\n", true); // log sql
 		
 		try {
-			stmt.execute("analyze N_g");
-			stmt.execute("analyze E_g");
+			// Analyze base tables if they exist (for query optimization)
+			// Wrap in try-catch to handle cases where tables don't exist yet
+			try {
+				stmt.execute("analyze N_g");
+				stmt.execute("analyze E_g");
+			} catch (PSQLException analyzeEx) {
+				// Tables don't exist yet (during initialization), silently ignore
+			}
 
 //			ResultSet rs = stmt.executeQuery("EXPLAIN " + query);
 //			while(rs.next()) {
@@ -184,8 +190,14 @@ public class Postgres {
 //			System.out.println("rs: " + rs.toString())		
 //			stmt.executeUpdate("COMMIT; VACUUM; COMMIT;");
 
-			stmt.execute("analyze N_g");
-			stmt.execute("analyze E_g");
+			// Analyze base tables if they exist (for query optimization)
+			// Wrap in try-catch to handle cases where tables don't exist yet
+			try {
+				stmt.execute("analyze N_g");
+				stmt.execute("analyze E_g");
+			} catch (PSQLException analyzeEx) {
+				// Tables don't exist yet (during initialization), silently ignore
+			}
 			
 			rs = stmt.executeQuery("explain " + query);
 //			rs = stmt.executeQuery("select plan_table_output from table(dbms_xplan.display())");

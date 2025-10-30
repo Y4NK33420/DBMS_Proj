@@ -79,24 +79,41 @@ public class ViewParser extends GraphTransQueryBaseVisitor<Void> {
 			level = GraphTransServer.getNumOfTransRuleListList();
 			//get Catalog.loadViewCatalog().get(baseName).getLevel() + 1;
 		}
-		transRuleList = new TransRuleList(viewName, baseName, viewType, level, createViewQuery);
-		transRuleList.setDefaultMap(ctx.with_default() != null);
-	
+	transRuleList = new TransRuleList(viewName, baseName, viewType, level, createViewQuery);
+	transRuleList.setDefaultMap(ctx.with_default() != null);
+
+	boolean hasConstruct = false;
+	for (int i = 0; i < ctx.view_definition().trans_rule().size(); i++) {
+		start = ctx.view_definition().trans_rule(i).getStart().getStartIndex();
+		stop = ctx.view_definition().trans_rule(i).getStop().getStopIndex() + 1;
+		String subquery = query.substring(start, stop);
+		logger.trace("transRule i: " + i + " => " + subquery);
 		
-		for (int i = 0; i < ctx.view_definition().trans_rule().size(); i++) {
-			start = ctx.view_definition().trans_rule(i).getStart().getStartIndex();
-			stop = ctx.view_definition().trans_rule(i).getStop().getStopIndex() + 1;
-			String subquery = query.substring(start, stop);
-			logger.trace("transRule i: " + i + " => " + subquery);
-			
-			TransRuleParser parser = new TransRuleParser();
-			TransRule transRule = parser.Parse(subquery);
-			transRule.computePatterns();
-			//transRule.show();
-			transRuleList.addTransRule(transRule);
+		TransRuleParser parser = new TransRuleParser();
+		TransRule transRule = parser.Parse(subquery);
+		transRule.computePatterns();
+		
+		// Check if this rule has CONSTRUCT, MAP, ADD, or DELETE clauses
+		if (transRule.getPatternConstruct().size() > 0 || 
+		    transRule.getMapFromToMap().size() > 0 ||
+		    transRule.getPatternAdd().size() > 0 ||
+		    transRule.getPatternRemove().size() > 0 ||
+		    transRule.getEdgeVarsToDelete().size() > 0 ||
+		    transRule.getNodeVarsToDelete().size() > 0) {
+			hasConstruct = true;
 		}
 		
-		return visitChildren(ctx); 
+		//transRule.show();
+		transRuleList.addTransRule(transRule);
+	}
+	
+	// If view has only MATCH (no CONSTRUCT/MAP/ADD/DELETE), automatically enable default map
+	if (!hasConstruct && !transRuleList.isDefaultMap()) {
+		System.out.println("[ViewParser] View has only MATCH clause, automatically enabling DEFAULT MAP");
+		transRuleList.setDefaultMap(true);
+	}
+	
+	return visitChildren(ctx);
 	}
 	
 	public String getViewName() {

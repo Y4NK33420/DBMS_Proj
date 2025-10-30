@@ -91,7 +91,7 @@ public class CommandExecutor {
 	 * @param cmd Command
 	 */
 	public static void run(String cmd) {
-//		System.out.println("[CommandExecutor] run cmd: " + cmd);
+//		System.out.println("[CommandExecutor] run cmd: [" + cmd + "]");
 		CommandParser parser = new CommandParser();
 		parser.Parse(cmd);		
 	}
@@ -145,11 +145,12 @@ public class CommandExecutor {
 					}
 				}
 				lineBuf = lineBuf + line + " ";
-				if (line.equals("")) {
+				if (line.trim().equals("")) {
 					console.write("  " + workspaceSpace + "-> ");
 					continue;
 				}
-				if (line.substring(line.length()-1, line.length()).equals(";")) {
+				// Trim line to handle trailing spaces before checking for semicolon
+				if (line.trim().endsWith(";")) {
 					run(lineBuf.substring(0, lineBuf.length()-2));
 					if (isQuit == true) {
 						break;
@@ -306,25 +307,26 @@ public class CommandExecutor {
 	public static void createGraph(String graphName, boolean realExecution) {
 		if (canExecuteCommand(Status.CONNECT) == false) return;	
 
-   		Schema.clear();
-   		if (realExecution == true) {
-   			if (store.createDatabase(graphName) == true) {
-				// TODO Auto-generated method stub
-				Util.Console.logln("Create graph [" + graphName + "].");
-			} else {
-				Util.Console.errln("Failed to create graph [" + graphName + "]. It may exist.");
-			}
-		}
-		BaseRuleGen.getPreds().clear();
-		BaseRuleGen.addRule();
-		ArrayList<Predicate> preds = BaseRuleGen.getPreds();
-		if (realExecution == true) {
+  		Schema.clear();
+  		if (realExecution == true) {
+  			if (store.createDatabase(graphName) == true) {
+			// TODO Auto-generated method stub
+			Util.Console.logln("Create graph [" + graphName + "].");
+			
+			// Only create schemas if database was freshly created
+			BaseRuleGen.getPreds().clear();
+			BaseRuleGen.addRule();
+			ArrayList<Predicate> preds = BaseRuleGen.getPreds();
 			for (Predicate p : preds) {
-	//			System.out.println("before createShcema: " + p);
+//				System.out.println("before createShcema: " + p);
 				store.createSchema(graphName, p);
 			}
+		} else {
+			Util.Console.errln("Failed to create graph [" + graphName + "]. It may exist.");
+			// Database already exists - don't try to recreate schemas
 		}
 	}
+}
 	
 	/**
 	 * Use a graph. Load existing system catalog.

@@ -1,0 +1,29 @@
+connect sd;
+create graph WhereTest;
+use WhereTest;
+
+create node Person;
+create edge Knows(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert N(4,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+insert E(12,3,4,"Knows");
+
+insert NP(1,"age","30");
+insert NP(2,"age","25");
+insert NP(3,"age","35");
+insert NP(4,"age","20");
+
+CREATE virtual VIEW Adults ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  WHERE a.age > "25"
+); 
+
+MATCH (a:Person)-[x:Knows]->(b:Person) FROM Adults RETURN (a),(b),(x);
+
+quit;
+

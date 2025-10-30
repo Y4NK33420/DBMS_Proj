@@ -1,0 +1,31 @@
+connect sd;
+create graph ChainedViewTest;
+use ChainedViewTest;
+
+create node Person;
+create node Friend;
+create node BestFriend;
+create edge Knows(Person -> Person);
+create edge FriendOf(Friend -> Friend);
+create edge BestFriendOf(BestFriend -> BestFriend);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+
+CREATE virtual VIEW Friends ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  CONSTRUCT (a:Friend)-[x:FriendOf]->(b:Friend)
+); 
+
+CREATE virtual VIEW BestFriends ON Friends (
+  MATCH (a:Friend)-[x:FriendOf]->(b:Friend)
+  CONSTRUCT (a:BestFriend)-[x:BestFriendOf]->(b:BestFriend)
+); 
+
+MATCH (a:BestFriend)-[x:BestFriendOf]->(b:BestFriend) FROM BestFriends RETURN (a),(b),(x);
+
+quit;
+

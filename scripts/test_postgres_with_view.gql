@@ -1,0 +1,21 @@
+connect pg;
+create graph PGViewTest;
+use PGViewTest;
+
+create node Person;
+create edge Knows(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+
+CREATE virtual VIEW FriendsView ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+); 
+
+MATCH (a:Person)-[x:Knows]->(b:Person) FROM FriendsView RETURN (a),(b),(x);
+
+quit;
+

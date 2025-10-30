@@ -1,0 +1,24 @@
+connect sd;
+create graph ConstructTest;
+use ConstructTest;
+
+create node Person;
+create node Friend;
+create edge Knows(Person -> Person);
+create edge FriendOf(Friend -> Friend);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+
+CREATE virtual VIEW FriendGraph ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  CONSTRUCT (a:Friend)-[x:FriendOf]->(b:Friend)
+); 
+
+MATCH (a:Friend)-[x:FriendOf]->(b:Friend) FROM FriendGraph RETURN (a),(b),(x);
+
+quit;
+

@@ -125,8 +125,8 @@ public class PostgresStore implements Store {
 		}
 
 		String indexName = name + "__" + colsStr.toString();  
-		//CREATE INDEX n_g_idx ON n_g (_0,_1,_2);
-		str.append("CREATE INDEX ")
+		//CREATE INDEX IF NOT EXISTS n_g_idx ON n_g (_0,_1,_2);
+		str.append("CREATE INDEX IF NOT EXISTS ")
 		.append(indexName).append(" ON ").append(name).append(" (")
 		.append(colsCommaStr.toString())
 		.append(")");
@@ -152,8 +152,8 @@ public class PostgresStore implements Store {
 		}
 
 		String indexName = name + "__" + colsStr.toString();  
-		//CREATE INDEX n_g_idx ON n_g (_0,_1,_2);
-		str.append("CREATE INDEX ")
+		//CREATE INDEX IF NOT EXISTS n_g_idx ON n_g (_0,_1,_2);
+		str.append("CREATE INDEX IF NOT EXISTS ")
 		.append(indexName).append(" ON ").append(name).append(" (")
 		.append(colsCommaStr.toString())
 		.append(")");
@@ -790,6 +790,14 @@ public class PostgresStore implements Store {
 					.append(name1).append( " (");
 //				System.out.println("[###PGIVM] query: " + query);
 			} else {
+				// Drop existing view first to avoid conflicts
+				String dropStmt = "DROP ";
+				if (isMaterialized == true) {
+					dropStmt += "MATERIALIZED ";
+				}
+				dropStmt += "VIEW IF EXISTS " + name1 + " CASCADE";
+				postgres.get(dbname).executeUpdate(dropStmt);
+				
 				str.append("CREATE ");
 				if (isMaterialized == true) {
 					str.append("MATERIALIZED ");
@@ -950,10 +958,13 @@ public class PostgresStore implements Store {
 		System.out.println("preds: " + preds);
 //		ArrayList<Predicate> predsLBOnly = BaseRuleGen.getPredsLBOnly();
 		
-//		for (Predicate p : preds) {
-//			createSchema(name, p);
-//		}
-//		
+		// Create base schema tables (N_g, E_g, NP_g, EP_g, catalog tables)
+		useDatabase(name);
+		
+		for (Predicate p : preds) {
+			createSchema(name, p);
+		}
+		
 //		for (Predicate p : predsLBOnly) {
 //			createSchema(name, p);
 //		}		
@@ -961,7 +972,6 @@ public class PostgresStore implements Store {
 //		ArrayList<String> cols;
 //			
 //		String curDBname = getDBname();
-		useDatabase(name);
 
 //		initialize();
 
@@ -1161,12 +1171,14 @@ public class PostgresStore implements Store {
 		// TODO Auto-generated method stub
 //		if (Config.isUseQuerySubQueryInPostgres() == false) {
 			int createdViewStartId = p.getCreatedViewId();
-//			System.out.println("headRules: " + p.getHeadRules());
+//			System.out.println("[DEBUG] headRules: " + p.getHeadRules());
+//			System.out.println("[DEBUG] createdViewStartId: " + createdViewStartId);
 			for (int i = createdViewStartId; i < p.getHeadRules().size(); i++) {
 				int tid3 = Util.startTimer();
 				List<DatalogClause> rules = p.getRules(p.getHeadRules().get(i));
 				String name = rules.get(0).getHead().getPredicate().getRelName();
 				boolean isMaterialized = p.getEDBs().contains(name);
+//				System.out.println("[DEBUG] Creating view: name=" + name + " isMaterialized=" + isMaterialized + " rules=" + rules.size());
 				createView(name, rules, isMaterialized);
 				System.out.println("[createView] view [" + name + "] Time: " + Util.getElapsedTime(tid3));
 				ArrayList<ArrayList<Integer>> idxSet = p.getIndexSet(p.getHeadRules().get(i));
@@ -1433,12 +1445,16 @@ public class PostgresStore implements Store {
 	public void createConstructors() {
 		
 //		System.out.println("********** LB CONST : " + GraphTransServer.getProgram().getConstructorForLB());
+		// Drop and recreate to ensure clean state
+		String dropQuery = "DROP TABLE IF EXISTS " + Config.relname_gennewid + "_MAP CASCADE;\n";
+		getPostgres(dbname).executeUpdate(dropQuery);
+		
 		String query = "CREATE TABLE " + Config.relname_gennewid + "_MAP (\n" + 
 				"  NEWID SERIAL PRIMARY KEY NOT NULL,\n" + 
 				"  VIEWRULEID varchar(64) NOT NULL,\n" + 
 				"  INPUTS integer[]\n" + 
 				");\n" + 
-				"CREATE INDEX newid_vrm_idx ON " + Config.relname_gennewid + "_MAP (VIEWRULEID, INPUTS);\n" + 
+				"CREATE INDEX IF NOT EXISTS newid_vrm_idx ON " + Config.relname_gennewid + "_MAP (VIEWRULEID, INPUTS);\n" + 
 				"ALTER SEQUENCE " + Config.relname_gennewid + "_MAP_NEWID_seq RESTART WITH 100000000 INCREMENT BY 1;\n";
 		
 		query += "CREATE OR REPLACE FUNCTION " + Config.relname_gennewid + "_CONST(varchar(64), VARIADIC arr int[])\n " +

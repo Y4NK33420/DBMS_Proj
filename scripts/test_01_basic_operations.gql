@@ -1,0 +1,31 @@
+connect sd;
+create graph BasicTest;
+use BasicTest;
+
+create node Person;
+create node City;
+create edge LivesIn(Person -> City);
+create edge Knows(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert N(10,"City");
+insert N(11,"City");
+
+insert E(101,1,10,"LivesIn");
+insert E(102,2,10,"LivesIn");
+insert E(103,3,11,"LivesIn");
+insert E(201,1,2,"Knows");
+insert E(202,2,3,"Knows");
+
+insert NP(1,"name","Alice");
+insert NP(2,"name","Bob");
+insert NP(3,"name","Carol");
+insert NP(10,"name","NYC");
+insert NP(11,"name","SF");
+
+MATCH (a:Person)-[x:Knows]->(b:Person) FROM g RETURN (a),(b),(x);
+
+quit;
+

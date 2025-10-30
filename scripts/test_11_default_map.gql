@@ -1,0 +1,27 @@
+connect sd;
+create graph DefaultMapTest;
+use DefaultMapTest;
+
+create node Person;
+create node User;
+create edge Knows(Person -> Person);
+create edge Connects(User -> User);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert E(10,1,2,"Knows");
+
+insert NP(1,"name","Alice");
+insert NP(2,"name","Bob");
+insert NP(1,"age","30");
+insert NP(2,"age","25");
+
+CREATE virtual VIEW UserView ON g WITH DEFAULT MAP (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  CONSTRUCT (a:User)-[x:Connects]->(b:User)
+); 
+
+MATCH (a:User)-[x:Connects]->(b:User) FROM UserView RETURN (a),(b),(x);
+
+quit;
+

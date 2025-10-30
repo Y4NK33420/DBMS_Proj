@@ -1,0 +1,24 @@
+connect sd;
+create graph RegexTest;
+use RegexTest;
+
+create node Person;
+create edge Knows(Person -> Person);
+create edge Likes(Person -> Person);
+create edge Connected(Person -> Person);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Likes");
+
+CREATE virtual VIEW AnyConnection ON g (
+  MATCH (a:Person)-[x:Knows|Likes]->(b:Person)
+  CONSTRUCT (a:Person)-[x:Connected]->(b:Person)
+); 
+
+MATCH (a:Person)-[x:Connected]->(b:Person) FROM AnyConnection RETURN (a),(b),(x);
+
+quit;
+

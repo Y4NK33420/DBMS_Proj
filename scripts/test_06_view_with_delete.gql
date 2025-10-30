@@ -1,0 +1,26 @@
+connect sd;
+create graph DeleteTest;
+use DeleteTest;
+
+create node Person;
+create node Active;
+create edge Knows(Person -> Person);
+create edge ActiveKnows(Active -> Active);
+
+insert N(1,"Person");
+insert N(2,"Person");
+insert N(3,"Person");
+insert E(10,1,2,"Knows");
+insert E(11,2,3,"Knows");
+insert E(12,1,3,"Knows");
+
+CREATE virtual VIEW OnlyActive ON g (
+  MATCH (a:Person)-[x:Knows]->(b:Person)
+  CONSTRUCT (a:Active)-[x:ActiveKnows]->(b:Active)
+  DELETE b
+); 
+
+MATCH (a:Active) FROM OnlyActive RETURN (a);
+
+quit;
+
